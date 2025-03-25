@@ -36,7 +36,7 @@ app.get("/leaderboard", (req, res) => {
 
 app.use(
   cors({
-    origin: ["http://127.0.0.1", "http://localhost", "http://localhost:3001"],
+    origin: ["http://127.0.0.1", "http://localhost", "http://localhost:3001","https://ctm-main.vercel.app/"],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
@@ -259,5 +259,5 @@ app.get("/checklogin", (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Server is running at https://ctm-main.vercel.app/:${port}`);
 });
