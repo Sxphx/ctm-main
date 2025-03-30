@@ -5,14 +5,12 @@
 
 const API_BASE_URL = "https://ctm-main.vercel.app/";
 
-// Utility function to get cookies
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
   return parts.length === 2 ? parts.pop().split(";").shift() : null;
 }
 
-// Toastr alert function
 function showAlertServer(type, topic, message) {
   toastr.options = {
     positionClass: "toast-top-center",
@@ -23,7 +21,6 @@ function showAlertServer(type, topic, message) {
   toastr[type](message, topic);
 }
 
-// Fetch leaderboard
 async function loadLeaderboard(url, updateFn) {
   try {
     const response = await fetch(`${API_BASE_URL}/${url}`, {
@@ -51,7 +48,6 @@ function updateLeaderboardUI(data) {
   });
 }
 
-// Authentication functions
 async function authenticate(endpoint, body) {
   try {
     const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
@@ -62,7 +58,7 @@ async function authenticate(endpoint, body) {
     const data = await response.json();
     if (response.ok) {
       showAlertServer("success", `${endpoint} Successful`, data.message);
-      document.cookie = `sessionToken=${data.token}; path=/;`; // Store session token
+      document.cookie = `sessionToken=${data.token}; path=/;`; 
       checkSession();
     } else {
       throw new Error(data.error);
@@ -93,7 +89,6 @@ async function logout() {
   checkSession();
 }
 
-// Check session
 async function checkSession() {
   const token = getCookie("sessionToken");
   if (!token) return updateAuthUI(null);
@@ -113,7 +108,6 @@ async function checkSession() {
   }
 }
 
-// Update UI based on authentication state
 function updateAuthUI(user) {
   document.getElementById("login-btn").style.display = user ? "none" : "unset";
   document.getElementById("logout-btn").style.display = user ? "unset" : "none";
@@ -125,7 +119,6 @@ function updateAuthUI(user) {
     : "Guest";
 }
 
-// Send score
 async function sendScore(score) {
   console.log(`Sending score: ${score}`);
   try {
@@ -145,7 +138,6 @@ async function sendScore(score) {
   }
 }
 
-// Initialize
 window.onload = () => {
   loadLeaderboard("leaderboard", updateLeaderboardUI);
   checkSession();
