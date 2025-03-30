@@ -88,7 +88,7 @@
             });
 
             async function initializeLeaderboard() {
-                const leaderboardData = await loadAllLeaderboard();
+                const leaderboardData = await allleaderboard();
 
                 if (leaderboardData && leaderboardData.length > 0) {
                     leaderboardTable.clear();
