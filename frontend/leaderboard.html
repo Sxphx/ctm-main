@@ -88,24 +88,32 @@
             });
 
             async function initializeLeaderboard() {
-                const leaderboardData = await allleaderboard();
-
-                if (leaderboardData && leaderboardData.length > 0) {
-                    leaderboardTable.clear();
-
-                    leaderboardData.forEach((player, index) => {
-                        leaderboardTable.row.add([
-                            index + 1,
-                            player.username,
-                            player.score
-                        ]);
+                try {
+                    const response = await fetch(`${API_BASE_URL}/allleaderboard`, {
+                        method: 'POST',
+                        headers: { Cookie: document.cookie }
                     });
-
-                    leaderboardTable.draw();
-                } else {
-                    console.error("Failed to load leaderboard data");
+                    const leaderboardData = await response.json();
+                    
+                    if (leaderboardData && leaderboardData.length > 0) {
+                        leaderboardTable.clear();
+                        leaderboardData.forEach((player, index) => {
+                            leaderboardTable.row.add([
+                                index + 1,
+                                player.username,
+                                player.score
+                            ]);
+                        });
+                        leaderboardTable.draw();
+                    } else {
+                        console.error("No leaderboard data received");
+                    }
+                } catch (error) {
+                    console.error("Error fetching leaderboard data:", error);
+                    alert("Failed to load leaderboard data.");
                 }
             }
+
             initializeLeaderboard();
         });
     </script>
