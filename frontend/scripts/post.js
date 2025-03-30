@@ -59,6 +59,7 @@ async function authenticate(endpoint, body) {
     if (response.ok) {
       showAlertServer("success", `${endpoint} Successful`, data.message);
       document.cookie = `sessionToken=${data.token}; path=/;`; 
+      $('.modal').modal('hide');
       checkSession();
     } else {
       throw new Error(data.error);
