@@ -1,5 +1,5 @@
-function showAlert(type, topic, message) {
-    const toastrOptions = {
+function showAlert(type, title, message) {
+    const options = {
         closeButton: false,
         newestOnTop: false,
         progressBar: false,
@@ -15,19 +15,22 @@ function showAlert(type, topic, message) {
         hideMethod: "fadeOut"
     };
 
-    toastr.options = toastrOptions;
+    toastr.options = options;
 
-    console.log(`[NOTIFY ${type}] ${topic}: ${message}`);
-
-    if (type === 'success') {
-        toastr.success(topic, message);
-    } else if (type === 'error') {
-        toastr.error(topic, message);
-    } else if (type === 'info') {
-        toastr.info(topic, message);
-    } else if (type === 'warning') {
-        toastr.warning(topic, message);
-    } else {
-        toastr.info(topic, message);
+    switch (type) {
+        case "success":
+            toastr.success(title, message);
+            break;
+        case "error":
+            toastr.error(title, message);
+            break;
+        case "info":
+            toastr.info(title, message);
+            break;
+        case "warning":
+            toastr.warning(title, message);
+            break;
+        default:
+            toastr.info(title, message);
     }
 }

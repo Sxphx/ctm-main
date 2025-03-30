@@ -83,7 +83,7 @@ function incrementScore() {
   document.getElementById("score").textContent = score;
 }
 function gameOver() {
-  sendScoreToServer(score);
+  sendScore(score);
   let gameOverReason = "";
 
   if (happiness <= 0) {

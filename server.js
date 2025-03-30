@@ -8,21 +8,9 @@ const { log } = require("console");
 const app = express();
 const path = require("path");
 const port = 3001;
-app.use(express.static(path.join(__dirname, "frontend")));
 
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "a7f4e9c2b1d8e3a6f5c2d9b7e4a1f8c3",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: false,
-      maxAge: 24 * 60 * 60 * 1000,
-      httpOnly: true,
-      sameSite: "lax",
-    },
-  })
-);
+//connect frontend
+app.use(express.static(path.join(__dirname, "frontend")));
 
 app.use(express.static(__dirname));
 
@@ -34,21 +22,7 @@ app.get("/leaderboard", (req, res) => {
   res.sendFile(path.join(__dirname, "leaderboard.html"));
 });
 
-app.use(
-  cors({
-    origin: ["http://127.0.0.1", "http://localhost", "http://localhost:3001","https://ctm-main.vercel.app/"],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
-
-// app.use(
-//   cors({
-//     origin: "https://rad-marigold-8b05b4.netlify.app", // Your actual Netlify frontend URL
-//     credentials: true,
-//   })
-// );
+// session middleware
 
 app.use(
   session({
@@ -64,8 +38,25 @@ app.use(
   })
 );
 
+// cors middleware
+app.use(
+  cors({
+    origin: [
+      "http://127.0.0.1",
+      "http://localhost",
+      "http://localhost:3001",
+      // ,"https://ctm-main.vercel.app/"
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
+// body-parser middleware
 app.use(bodyParser.json());
 
+//database connect
 const { createClient } = require("@supabase/supabase-js");
 require("dotenv").config();
 
@@ -74,6 +65,7 @@ const supabase = createClient(
   process.env.SUPABASE_KEY
 );
 
+// check connection
 supabase
   .from("ctm")
   .select("*")
@@ -205,6 +197,8 @@ app.post("/score", async (req, res) => {
   const { score } = req.body;
   const UID = req.session.user.UID;
 
+  console.log(UID);
+
   if (!UID) {
     return res.status(401).json({ message: "Not logged in" });
   }
@@ -258,6 +252,10 @@ app.get("/checklogin", (req, res) => {
   return res.status(200).json({ loggedIn: false });
 });
 
+// app.listen(port, () => {
+//   console.log(`Server is running at https://ctm-main.vercel.app/:${port}`);
+// });
+
 app.listen(port, () => {
-  console.log(`Server is running at https://ctm-main.vercel.app/:${port}`);
+  console.log(`Server is running at http://localhost:${port}`);
 });
