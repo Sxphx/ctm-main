@@ -174,7 +174,7 @@ app.post("/login", async (req, res) => {
     username: username,
   };
 
-  console.log(req.session.user);
+  // console.log(req.session.user);
 
   res.status(200).json({
     message: "Login successful",
@@ -189,7 +189,7 @@ app.post("/logout", async (req, res) => {
     return res.status(500).json({ message: "Failed to logout", error });
 
   req.session.destroy();
-  console.log(req.session);
+  // console.log(req.session);
   res.status(200).json({ message: "Logout successful" });
 });
 
@@ -197,7 +197,7 @@ app.post("/score", async (req, res) => {
   const { score } = req.body;
   const UID = req.session.user.UID;
 
-  console.log(UID);
+  // console.log(UID);
 
   if (!UID) {
     return res.status(401).json({ message: "Not logged in" });
