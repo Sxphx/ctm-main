@@ -1,0 +1,22 @@
+#!/bin/bash
+
+# Path to the .txt file
+file="update_count.txt"
+
+# Check if the file exists
+if [ -f "$file" ]; then
+    # Read the current count
+    count=$(cat "$file")
+    # Increment the count by 1
+    new_count=$((count + 1))
+else
+    # If the file doesn't exist, start with 1
+    new_count=1
+fi
+
+# Write the new count to the file
+echo $new_count > "$file"
+
+# Add the updated file to the commit
+git add "$file"
+git commit --amend --no-edit
