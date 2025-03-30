@@ -45,7 +45,7 @@ app.use(
       "http://127.0.0.1",
       "http://localhost",
       "http://localhost:3001",
-      // ,"https://ctm-main.vercel.app/"
+      ,"https://ctm-main.vercel.app/"
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
@@ -252,10 +252,10 @@ app.get("/checklogin", (req, res) => {
   return res.status(200).json({ loggedIn: false });
 });
 
-// app.listen(port, () => {
-//   console.log(`Server is running at https://ctm-main.vercel.app/:${port}`);
-// });
-
 app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Server is running at https://ctm-main.vercel.app/:${port}`);
 });
+
+// app.listen(port, () => {
+//   console.log(`Server is running at http://localhost:${port}`);
+// });
