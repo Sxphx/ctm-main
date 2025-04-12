@@ -173,6 +173,11 @@ app.post("/login", async (req, res) => {
     username: username,
   };
 
+  res.cookie("sessionToken", data.session.access_token, {
+    httpOnly: false, // So frontend can read it
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
+    sameSite: "lax",
+  });
   // console.log(req.session.user);
 
   res.status(200).json({
@@ -188,7 +193,7 @@ app.post("/logout", async (req, res) => {
     return res.status(500).json({ message: "Failed to logout", error });
 
   req.session.destroy();
-  // console.log(req.session);
+  res.clearCookie("sessionToken");
   res.status(200).json({ message: "Logout successful" });
 });
 
