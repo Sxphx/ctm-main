@@ -14,6 +14,7 @@ let buildingsList = [
     }),
     effects: { happiness: 5 },
     description: "Increases happiness by 5 per action",
+    cell: "0-0",
   },
   {
     name: "Water Treatment",
@@ -30,6 +31,7 @@ let buildingsList = [
     }),
     effects: { water: 4 },
     description: "Produces 4 water per action",
+    cell: "0-1",
   },
   {
     name: "Power Plant",
@@ -46,6 +48,7 @@ let buildingsList = [
     }),
     effects: { energy: 6 },
     description: "Produces 6 energy per action",
+    cell: "0-2",
   },
   {
     name: "Farm",
@@ -62,6 +65,7 @@ let buildingsList = [
     }),
     effects: { food: 5 },
     description: "Produces 5 food per action",
+    cell: "1-0",
   },
   {
     name: "Park",
@@ -78,6 +82,7 @@ let buildingsList = [
     }),
     effects: { happiness: 2 },
     description: "Increases happiness by 2 per action",
+    cell: "1-1",
   },
   {
     name: "Market",
@@ -94,6 +99,7 @@ let buildingsList = [
     }),
     effects: { money: 2, happiness: 1 },
     description: "Generates 2 money and 1 happiness per action",
+    cell: "1-2",
   },
   {
     name: "University",
@@ -110,6 +116,7 @@ let buildingsList = [
     }),
     effects: { researchPoint: 2 },
     description: "Increases research point by 2 per action",
+    cell: "2-1",
   },
 ];
 
@@ -124,7 +131,7 @@ function buildingListUI() {
 
   for (const building of buildingsList) {
     const colDiv = document.createElement("div");
-    colDiv.className = "col-md-6";
+    colDiv.className = "col-md-4";
 
     const cardDiv = document.createElement("div");
     cardDiv.className = "card h-100";
@@ -175,15 +182,18 @@ function buildingListUI() {
 }
 
 function buildingBuy(buildingId) {
+  // console.log("buildingBuy:", buildingId);
   const building = buildingsList.find((b) => b.id === buildingId);
   const cityHall = buildingsList.find((b) => b.id === "cityHall");
 
   if (!cityHall.owned && building.id !== "cityHall") {
+    // console.log("cityHall not owned", cityHall);
     showAlert("error", "Building Failed", "You must build a City Hall first.");
     return;
   }
 
   if (building.level > cityHall.level) {
+    // console.log("cityHall level too low", cityHall, building.level);
     showAlert(
       "error",
       "Building Failed",
@@ -193,6 +203,7 @@ function buildingBuy(buildingId) {
   }
 
   if (availableSpace <= 0) {
+    // console.log("no more space available", availableSpace);
     showAlert(
       "error",
       "Building Failed",
@@ -205,8 +216,10 @@ function buildingBuy(buildingId) {
   for (const [resource, amount] of Object.entries(
     building.cost(building.level + 1)
   )) {
+    // console.log("checking resource:", resource, amount);
     if (resource === "money" && money < amount) {
       enoughResources = false;
+      // console.log("not enough money", money, amount);
       showAlert(
         "error",
         "Not Enough Money",
@@ -216,6 +229,7 @@ function buildingBuy(buildingId) {
     }
     if (resource === "water" && water < amount) {
       enoughResources = false;
+      // console.log("not enough water", water, amount);
       showAlert(
         "error",
         "Not Enough Water",
@@ -225,6 +239,7 @@ function buildingBuy(buildingId) {
     }
     if (resource === "energy" && energy < amount) {
       enoughResources = false;
+      // console.log("not enough energy", energy, amount);
       showAlert(
         "error",
         "Not Enough Energy",
@@ -234,6 +249,7 @@ function buildingBuy(buildingId) {
     }
     if (resource === "food" && food < amount) {
       enoughResources = false;
+      // console.log("not enough food", food, amount);
       showAlert(
         "error",
         "Not Enough Food",
@@ -243,6 +259,7 @@ function buildingBuy(buildingId) {
     }
     if (resource === "happiness" && happiness < amount) {
       enoughResources = false;
+      // console.log("not enough happiness", happiness, amount);
       showAlert(
         "error",
         "Not Enough Happiness",
@@ -264,13 +281,14 @@ function buildingBuy(buildingId) {
     }
 
     building.owned = true;
-    availableSpace -= 1;
+  
     showAlert(
       "success",
       "Building Purchased",
       `You have successfully purchased the ${building.name}.`
     );
     updateStats();
+    updateDisplayUI(buildingId);
     updateBuildingUI(buildingId);
   }
 }
@@ -424,6 +442,15 @@ function applyBuildingEffects() {
       }
     }
   }
+}
+
+function updateDisplayUI(buildingId) {
+  const building = buildingsList.find((b) => b.id === buildingId);
+  removeElm = building.cell;
+  // console.log(removeElm);
+  const element = document.getElementById(`btn-cell-${removeElm}`);
+  element.remove();
+  document.getElementById(`cell-${removeElm}`).style.filter = "brightness(1)";
 }
 
 buildingListUI();

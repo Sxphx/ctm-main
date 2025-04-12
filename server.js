@@ -9,19 +9,6 @@ const app = express();
 const path = require("path");
 const port = 3001;
 
-//connect frontend
-app.use(express.static(path.join(__dirname, "frontend")));
-
-app.use(express.static(__dirname));
-
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
-
-app.get("/leaderboard", (req, res) => {
-  res.sendFile(path.join(__dirname, "leaderboard.html"));
-});
-
 // session middleware
 
 app.use(
@@ -42,16 +29,28 @@ app.use(
 app.use(
   cors({
     origin: [
-      "http://127.0.0.1",
-      "http://localhost",
-      "http://localhost:3001",
-      ,"https://ctm-main.vercel.app/"
+      "http://127.0.0.1:3000",
+      "http://localhost:3000",
+      "https://ctm-main.vercel.app",
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+//connect frontend
+app.use(express.static(path.join(__dirname, "frontend")));
+
+app.use(express.static(__dirname));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+app.get("/leaderboard", (req, res) => {
+  res.sendFile(path.join(__dirname, "leaderboard.html"));
+});
 
 // body-parser middleware
 app.use(bodyParser.json());
@@ -252,8 +251,9 @@ app.get("/checklogin", (req, res) => {
   return res.status(200).json({ loggedIn: false });
 });
 
-
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
-    console.log(`Server is running at https://ctm-main.vercel.app/:${port}`);
+  console.log(`Server is running at https://ctm-main.vercel.app/:${port}`);
 });
+
+app.set("trust proxy", 1);

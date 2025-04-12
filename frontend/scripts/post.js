@@ -24,8 +24,10 @@ async function loadLeaderboard(url, updateFn) {
   try {
     const response = await fetch(`${API_BASE_URL}/${url}`, {
       method: "POST",
-      headers: { Cookie: document.cookie },
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
     });
+
     if (response.ok) {
       const data = await response.json();
       data.sort((a, b) => b.score - a.score);
@@ -51,9 +53,9 @@ async function authenticate(endpoint, body) {
   try {
     const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
       method: "POST",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
-      credentials: "include",
     });
 
     const data = await response.json();
@@ -99,8 +101,9 @@ async function checkSession() {
 
   try {
     const response = await fetch(`${API_BASE_URL}/session`, {
-      method: "GET",
+      method: "POST",
       credentials: "include",
+      headers: { "Content-Type": "application/json" },
     });
     console.log(`Session: response status ${response.status}`);
     if (response.ok) {

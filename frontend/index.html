@@ -18,7 +18,7 @@
 </head>
 
 <body>
-    <div class="score p-2" style="position: absolute;">
+    <div class="score p-2" style="position: absolute; z-index: 2;">
         <h2 style="color: tomato;">Username : <span id="usernameDisplay">Guest</span></h2>
         <h3>Score: <span id="score">0</span></h3>
         <h2>Action: <span id="action">0</span></h2>
@@ -65,6 +65,17 @@
         </table>
         <a href="leaderboard.html"><button class="btn btn-green" style="width: 100%;">All Score Board</button></a>
 
+    </div>
+
+    <div id="actionLog">
+        <div class="actionLog">
+            <div class="actionlog container">
+                <h1>Action Log</h1>
+                <div class="actionlog-content">
+                    <ul id="action-log-list"></ul>
+                </div>
+            </div>
+        </div>
     </div>
 
 
@@ -145,6 +156,7 @@
         </div>
     </div>
 
+
     <div class="modal fade" id="guideModal" tabindex="-1" role="dialog" aria-labelledby="guideModalLabel"
         aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog" role="document">
@@ -224,7 +236,7 @@
         </div>
     </div>
 
-    <div class="modal fade modal-lg" id="buildingModal" tabindex="-1" role="dialog" aria-labelledby="guideModalLabel"
+    <div class="modal fade modal-xl" id="buildingModal" tabindex="-1" role="dialog" aria-labelledby="guideModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -235,10 +247,6 @@
                 <div class="modal-body">
                     <div id="building-list">
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-red" data-bs-dismiss="modal"><i
-                            class="fa-regular fa-xmark"></i> &nbsp </button>
                 </div>
             </div>
         </div>

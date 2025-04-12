@@ -26,12 +26,23 @@ span.menu-spacer {
   border-radius: 5px;
 }
 
-.city-display {
+/* .city-display {
   justify-content: center;
   display: flex;
   height: 650px;
   background: azure;
   width: 65%;
+  justify-self: center;
+  border-radius: 15px;
+  padding: 15px;
+} */
+
+.city-display {
+  justify-content: center;
+  display: flex;
+  height: 750px;
+  background: azure;
+  width: 750px;
   justify-self: center;
   border-radius: 15px;
   padding: 15px;
@@ -200,17 +211,17 @@ table {
 td {
   border: 1px solid #cccccca4;
   padding: 5px;
-  width: fit-content;
-  height: fit-content;
+  /* width: fit-content;
+  height: fit-content; */
   text-align: center;
   background-color: #f0f0f03b;
 }
 
-td:hover {
+/* td:hover {
   background-color: #ddd;
-}
+} */
 
-.modal {
+/* .modal {
   transition: transform 0.3s ease-out, opacity 0.3s ease-out;
   transform: translateY(50px);
   opacity: 0;
@@ -219,10 +230,10 @@ td:hover {
 .modal.show {
   transform: translateY(0);
   opacity: 1;
-}
+} */
 
 img.city {
-  width: 40%;
+  width: 85%;
   opacity: 1 !important;
 }
 
@@ -254,4 +265,42 @@ a {
 a:hover {
   text-decoration: none;
   color: #000;
+}
+
+#actionLog {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
+  padding-top: 20%;
+}
+
+#action-log-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.actionlog-contetnt {
+  background-color: #80808042;
+}
+
+.log-entry {
+  padding: 8px 12px;
+  border-bottom: 1px solid #ccc;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.log-pre {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: inherit;
+  display: block;
+  font-size: large;
+}
+
+.log-time {
+  color: #888;
+  font-size: 12px;
 }

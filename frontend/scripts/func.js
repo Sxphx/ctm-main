@@ -1,17 +1,40 @@
 updateStats();
+
+function surrender() {
+  surrender = true;
+  gameOver();
+}
+
+function logAction(message) {
+  const logList = document.getElementById("action-log-list");
+  const logItem = document.createElement("li");
+
+  const timestamp = new Date().toLocaleTimeString();
+  logItem.innerHTML = `<span class="log-time">Action : [${action}]</span>\n<pre class="log-pre">${message}</pre>`;
+  logItem.classList.add("log-entry");
+
+  logList.prepend(logItem);
+
+  const logs = logList.querySelectorAll("li");
+  logs.forEach((item, index) => {
+    if ((index + 1) % 3 === 0) {
+      logList.removeChild(item);
+    }
+  });
+}
+
 function updateStats() {
-  console.log("Updating Stats:");
-  console.log(`Water: ${water}`);
-  console.log(`Energy: ${energy}`);
-  console.log(`Food: ${food}`);
-  console.log(`Population: ${population}`);
-  console.log(`Money: ${money}`);
-  console.log(`Happiness: ${happiness}`);
-  console.log(`City Expanded: ${cityExpansion}`);
-  console.log(`Available Space: ${availableSpace}`);
-  console.log(`Score: ${score}`);
-  console.log(`Action: ${action}`);
-  console.log("------------------------");
+  // console.log("Updating Stats:");
+  // console.log(`Water: ${water}`);
+  // console.log(`Energy: ${energy}`);
+  // console.log(`Food: ${food}`);
+  // console.log(`Population: ${population}`);
+  // console.log(`Money: ${money}`);
+  // console.log(`Happiness: ${happiness}`);
+  // console.log(`City Expanded: ${cityExpansion}`);
+  // console.log(`Score: ${score}`);
+  // console.log(`Action: ${action}`);
+  // console.log("------------------------");
 
   document.getElementById("water").textContent = Math.max(0, Math.floor(water));
   document.getElementById("energy").textContent = Math.max(
@@ -85,16 +108,15 @@ function incrementScore() {
 function gameOver() {
   sendScore(score);
   let gameOverReason = "";
-
-  if (happiness <= 0) {
+  if (surrender === true) {
+    gameOverReason = "You have surrendered!";
+  } else if (happiness <= 0) {
     gameOverReason = "Your citizens are extremely unhappy and have revolted!";
   } else if (population <= 0) {
     gameOverReason =
       "Your city has been abandoned due to poor living conditions!";
   } else if (water <= 0 && energy <= 0 && food <= 0) {
     gameOverReason = "Your city has run out of all critical resources!";
-  } else if (surrender === true) {
-    gameOverReason = "You have surrendered!";
   } else {
     gameOverReason =
       "You've run out of resources and have no valid moves left!";
@@ -123,9 +145,4 @@ function gameOver() {
 
 function restart() {
   location.reload();
-}
-
-function surrender() {
-  surrender = true;
-  gameOver();
 }

@@ -1,3 +1,5 @@
+// const { log } = require("winston");
+
 function checkForValidMoves() {
   if (water <= 0 && energy <= 0 && food <= 0) {
     return false;
@@ -28,13 +30,30 @@ function makeTable() {
     const tr = document.createElement("tr");
     for (let j = 0; j < 3; j++) {
       const td = document.createElement("td");
+      td.className = "city";
       td.id = `cell-${i}-${j}`;
-      imgtd = document.createElement("img");
-      imgtd.src = "img/Ground.png";
-      imgtd.id = "ground";
+      const imgtd = document.createElement("img");
+      imgtd.src = `img/useBuilding/${i}-${j}.png`;
       imgtd.className = "city";
-      tr.appendChild(td);
+      imgtd.width = "city";
+      imgtd.id = `img-cell-${i}-${j}`;
+      const btntd = document.createElement("btn");
+      btntd.className = "btn city-btn";
+      btntd.type = "button";
+      btntd.id = `btn-cell-${i}-${j}`;
+      btntd.innerHTML = `Not Built`;
       td.appendChild(imgtd);
+      td.appendChild(btntd);
+      td.style.position = "relative";
+      btntd.style.position = "absolute";
+      btntd.style.top = "50%";
+      btntd.style.left = "50%";
+      btntd.style.transform = "translate(-50%, -50%)";
+      btntd.style.zIndex = "1";
+      btntd.style.color = "black";
+      btntd.style.fontSize = "2rem";
+      td.style.filter = "brightness(0.5)";
+      tr.appendChild(td);
     }
     tbody.appendChild(tr);
   }
@@ -142,6 +161,7 @@ function makeDecision(decision) {
     gameOver();
     return;
   }
+
   switch (decision) {
     case "investWater":
       const waterCost = 20 * (1 - checkAutomation());
@@ -149,20 +169,20 @@ function makeDecision(decision) {
         showAlert(
           "error",
           "Not enough money",
-          `You need ${Math.ceil(
-            waterCost
-          )} money to invest in water infrastructure.`
+          `You need ${Math.ceil(waterCost)} money to invest in water infrastructure.`
         );
         return;
       }
       waterGet = 25 * (1 + checkWater()) * waterMultiplier;
       water += waterGet;
       money -= waterCost;
-      console.log(`Get water: ${waterGet}`);
+      logAction(
+        `💧 Water Infrastructure Investment\n- Gained ${Math.floor(waterGet)} water\n- Cost: ${Math.ceil(waterCost)} money`
+      );
       showAlert(
         "success",
         "Water Infrastructure Improved",
-        `Water supply has increased by ${waterGet}.`
+        `Water supply has increased by ${Math.floor(waterGet)}.`
       );
       break;
 
@@ -172,9 +192,7 @@ function makeDecision(decision) {
         showAlert(
           "error",
           "Insufficient resources",
-          `You need 15 water and ${Math.ceil(
-            energyCost
-          )} money to build a power plant.`
+          `You need 15 water and ${Math.ceil(energyCost)} money to build a power plant.`
         );
         return;
       }
@@ -182,10 +200,13 @@ function makeDecision(decision) {
       energy += energyGet;
       water -= 15;
       money -= energyCost;
+      logAction(
+        `⚡ Power Plant Construction\n- Gained ${Math.floor(energyGet)} energy\n- Cost: ${Math.ceil(energyCost)} money, 15 water`
+      );
       showAlert(
         "success",
         "Power Plant Built",
-        `Energy production has increased by ${energyGet}.`
+        `Energy production has increased by ${Math.floor(energyGet)}.`
       );
       break;
 
@@ -202,10 +223,13 @@ function makeDecision(decision) {
       energy -= 15;
       foodGet = 35 * (1 + checkFarm()) * foodMultiplier;
       food += foodGet;
+      logAction(
+        `🌾 Food Harvesting\n- Gained ${Math.floor(foodGet)} food\n- Cost: 20 water, 15 energy`
+      );
       showAlert(
         "success",
         "Food Harvested",
-        `Food production has increased by ${foodGet}.`
+        `Food production has increased by ${Math.floor(foodGet)}.`
       );
       break;
 
@@ -218,44 +242,44 @@ function makeDecision(decision) {
           `You need ${Math.ceil(expansionCost)} money to expand the city.`
         );
         return;
-      } else if (availableSpace <= 0) {
-        showAlert(
-          "error",
-          "No available space",
-          "No available space to expand the city."
-        );
-        return;
       }
       cityExpansion += 1;
-      availableSpace -= 1;
       population += 15;
-      happiness += 15 * (1 + checkTransport());
+      const happinessBoost = 15 * (1 + checkTransport());
+      happiness += happinessBoost;
       money -= expansionCost;
-      console.log(`Expansion cost: ${expansionCost}`);
+      logAction(
+        `🏙️ City Expansion\n- Population +15, Happiness +${Math.floor(happinessBoost)}\n- Cost: ${Math.ceil(expansionCost)} money`
+      );
       showAlert(
         "success",
         "City Expansion",
-        `Population and happiness have increased by ${15}.`
+        `Population and happiness have increased by ${Math.floor(happinessBoost)}.`
       );
       break;
   }
 
+  // Resource consumption
   const baseConsumption = 5;
   const populationFactor = 1 + population / 100;
 
   const energyConsumed = baseConsumption + 5 * populationFactor;
   const foodConsumed = baseConsumption * populationFactor;
   const waterConsumed = baseConsumption * populationFactor;
-  const happinessConsumed = 2;
+  let happinessConsumed = 2;
 
   if (food < 75) {
-    const happinessConsumed = baseConsumption * populationFactor;
+    happinessConsumed = baseConsumption * populationFactor;
   }
 
   energy -= energyConsumed;
   food -= foodConsumed;
   water -= waterConsumed;
   happiness -= happinessConsumed;
+
+  logAction(
+    `🔻 Resource Consumption\n- Energy: ${Math.ceil(energyConsumed)}\n- Food: ${Math.ceil(foodConsumed)}\n- Water: ${Math.ceil(waterConsumed)}\n- Happiness: ${Math.ceil(happinessConsumed)}`
+  );
 
   console.log(
     `Consumption - Energy: ${energyConsumed}, Food: ${foodConsumed}, Water: ${waterConsumed}, Happiness: ${happinessConsumed}`
