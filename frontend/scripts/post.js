@@ -1,9 +1,8 @@
-// const API_BASE_URL =
-//   window.location.hostname === "127.0.0.1"
-//     ? "http://127.0.0.1:3001"
-//     : "http://localhost:3001";
-
-const API_BASE_URL = "https://ctm-main.vercel.app/";
+const API_BASE_URL =
+  window.location.hostname === "127.0.0.1" ||
+  window.location.hostname === "localhost"
+    ? "http://127.0.0.1:3001"
+    : "https://ctm-main.vercel.app/";
 
 function getCookie(name) {
   const value = `; ${document.cookie}`;
@@ -54,12 +53,13 @@ async function authenticate(endpoint, body) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
+      credentials: "include",
     });
+
     const data = await response.json();
     if (response.ok) {
       showAlertServer("success", `${endpoint} Successful`, data.message);
-      document.cookie = `sessionToken=${data.token}; path=/;`; 
-      $('.modal').modal('hide');
+      $(".modal").modal("hide");
       checkSession();
     } else {
       throw new Error(data.error);
@@ -100,7 +100,7 @@ async function checkSession() {
   try {
     const response = await fetch(`${API_BASE_URL}/session`, {
       method: "GET",
-      credentials: "include",  
+      credentials: "include",
     });
     console.log(`Session: response status ${response.status}`);
     if (response.ok) {
@@ -133,8 +133,9 @@ async function sendScore(score) {
   try {
     const response = await fetch(`${API_BASE_URL}/score`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", Cookie: document.cookie },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ score }),
+      credentials: "include",
     });
     const data = await response.json();
     if (response.ok) {
