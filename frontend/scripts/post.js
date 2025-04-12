@@ -99,6 +99,7 @@ async function checkSession() {
 
   try {
     const response = await fetch(`${API_BASE_URL}/session`, {
+      credentials: "include",
       headers: { Cookie: document.cookie },
     });
     console.log(`Session: response status ${response.status}`);
@@ -115,7 +116,6 @@ async function checkSession() {
     updateAuthUI(null);
   }
 }
-
 function updateAuthUI(user) {
   document.getElementById("login-btn").style.display = user ? "none" : "unset";
   document.getElementById("logout-btn").style.display = user ? "unset" : "none";
