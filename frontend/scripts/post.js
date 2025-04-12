@@ -62,6 +62,7 @@ async function authenticate(endpoint, body) {
     if (response.ok) {
       showAlertServer("success", `${endpoint} Successful`, data.message);
       $(".modal").modal("hide");
+      updateAuthUI(data.user);
     } else {
       throw new Error(data.error);
     }
@@ -69,6 +70,7 @@ async function authenticate(endpoint, body) {
     showAlertServer("error", `${endpoint} Failed`, error.message);
   }
 }
+
 
 function register() {
   authenticate("register", {
@@ -88,8 +90,9 @@ async function logout() {
   document.cookie =
     "sessionToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   showAlertServer("success", "Logged Out", "You have successfully logged out.");
-  checkSession();
+  updateAuthUI(null);
 }
+
 
 async function checkSession() {
   const token = getCookie("sessionToken");
