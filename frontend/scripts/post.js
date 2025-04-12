@@ -62,7 +62,6 @@ async function authenticate(endpoint, body) {
     if (response.ok) {
       showAlertServer("success", `${endpoint} Successful`, data.message);
       $(".modal").modal("hide");
-      checkSession();
     } else {
       throw new Error(data.error);
     }
