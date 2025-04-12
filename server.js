@@ -30,10 +30,10 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: true,
+      secure: false,
       maxAge: 24 * 60 * 60 * 1000,
       httpOnly: true,
-      sameSite: "none",
+      sameSite: "lax",
     },
   })
 );
@@ -252,10 +252,8 @@ app.get("/checklogin", (req, res) => {
   return res.status(200).json({ loggedIn: false });
 });
 
-app.listen(port, () => {
-  console.log(`Server is running at https://ctm-main.vercel.app/:${port}`);
-});
 
-// app.listen(port, () => {
-//   console.log(`Server is running at http://localhost:${port}`);
-// });
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
+    console.log(`Server is running at https://ctm-main.vercel.app/:${port}`);
+});
