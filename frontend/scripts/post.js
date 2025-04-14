@@ -63,7 +63,7 @@ async function authenticate(endpoint, body, stateAuth) {
       showAlertServer("success", `${endpoint} Successful`, data.message);
       $(".modal").modal("hide");
       console.log(data.user);
-      if (stateAuth === 'Login') {
+      if (stateAuth === "Login") {
         updateAuthUI(data.user);
       }
     } else {
@@ -71,7 +71,11 @@ async function authenticate(endpoint, body, stateAuth) {
     }
   } catch (error) {
     console.log(error);
-    showAlertServer("error", `${endpoint} Failed`, error.error || "An unexpected error occurred.");
+    showAlertServer(
+      "error",
+      `${endpoint} Failed`,
+      error.error || "An unexpected error occurred."
+    );
   }
 }
 
@@ -79,7 +83,7 @@ function register() {
   authenticate("register", {
     username: document.getElementById("registerUsername").value.trim(),
     password: document.getElementById("registerPassword").value.trim(),
-    stateAuth: 'register',
+    stateAuth: "register",
   });
 }
 
@@ -87,7 +91,7 @@ function login() {
   authenticate("login", {
     username: document.getElementById("loginUsername").value.trim(),
     password: document.getElementById("loginPassword").value.trim(),
-    stateAuth: 'Login',
+    stateAuth: "Login",
   });
 }
 
@@ -126,7 +130,7 @@ function updateAuthUI(user) {
     ? "none"
     : "unset";
   document.getElementById("usernameDisplay").textContent = user
-    ? user.email.split("@")[0]
+    ? username
     : "Guest";
 }
 
