@@ -4,11 +4,6 @@ const API_BASE_URL =
     ? "http://127.0.0.1:3000"
     : "https://ctm-main.vercel.app/";
 
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  return parts.length === 2 ? parts.pop().split(";").shift() : null;
-}
 
 function showAlertServer(type, topic, message) {
   toastr.options = {
@@ -117,14 +112,14 @@ async function checkSession() {
 }
 
 function updateAuthUI(user) {
-  const username = user?.email.split("@")[0] ?? "Guest";
+  const usernameDisplaySet = user?.email?.split?.("@")[0] ?? "Guest";
   console.log(username);
   document.getElementById("login-btn").style.display = user ? "none" : "unset";
   document.getElementById("logout-btn").style.display = user ? "unset" : "none";
   document.getElementById("register-btn").style.display = user
     ? "none"
     : "unset";
-  document.getElementById("usernameDisplay").textContent = username;
+  document.getElementById("usernameDisplay").textContent = usernameDisplaySet;
 }
 
 async function sendScore(score) {
