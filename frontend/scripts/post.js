@@ -56,7 +56,9 @@ async function authenticate(endpoint, body) {
     if (response.ok) {
       showAlertServer("success", `${endpoint} Successful`, data.message);
       $(".modal").modal("hide");
-      updateAuthUI(data.user);
+      if (endpoint === "login") {
+        updateAuthUI(data.user);
+      }
     } else {
       throw new Error(data.error);
     }
