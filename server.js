@@ -151,7 +151,9 @@ app.post("/register", async (req, res) => {
 
 // POST /login
 app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
+
+  const email = `${username}@linganggu.com`;
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
@@ -159,6 +161,7 @@ app.post("/login", async (req, res) => {
   });
 
   if (error || !data.session) {
+    console.log("Login error:", error);
     return res.status(401).json({ message: "Invalid credentials", error });
   }
 
