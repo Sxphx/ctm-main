@@ -101,12 +101,13 @@ async function checkSession() {
 
   if (response.ok) {
     const data = await response.json();
-    updateAuthUI(data.user);
+    username = data.user.email.split("@")[0];
+    updateAuthUI(username);
+    console.log(username);
   } else {
     updateAuthUI(null);
   }
 }
-
 
 function updateAuthUI(user) {
   document.getElementById("login-btn").style.display = user ? "none" : "unset";
