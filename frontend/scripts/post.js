@@ -116,7 +116,7 @@ function updateAuthUI(user) {
     ? "none"
     : "unset";
   document.getElementById("usernameDisplay").textContent = user
-    ? user.username
+    ? username
     : "Guest";
 }
 
