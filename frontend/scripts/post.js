@@ -71,11 +71,7 @@ async function authenticate(endpoint, body, stateAuth) {
       throw new Error(data.error);
     }
   } catch (error) {
-    showAlertServer(
-      "error",
-      `${endpoint} Failed`,
-      error.error || "An unexpected error occurred."
-    );
+    showAlertServer("error", `${endpoint} Failed`, error.message);
   }
 }
 
