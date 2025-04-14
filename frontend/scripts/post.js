@@ -86,8 +86,11 @@ function login() {
 }
 
 async function logout() {
-  document.cookie =
-    "sessionToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  await fetch("/logout", {
+    method: "POST",
+    credentials: "include",
+  });
+
   showAlertServer("success", "Logged Out", "You have successfully logged out.");
   updateAuthUI(null);
 }
