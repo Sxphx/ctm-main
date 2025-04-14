@@ -122,6 +122,7 @@ async function checkSession() {
 
 function updateAuthUI(user) {
   const username = user?.email.split("@")[0] ?? "Guest";
+  console.log(username);
   document.getElementById("login-btn").style.display = user ? "none" : "unset";
   document.getElementById("logout-btn").style.display = user ? "unset" : "none";
   document.getElementById("register-btn").style.display = user
