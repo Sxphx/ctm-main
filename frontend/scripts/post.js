@@ -111,7 +111,7 @@ async function checkSession() {
       console.log(`Session: response data`, data);
       updateAuthUI(data.user);
     } else {
-      console.log(`Session: failed to get session data`);
+      console.log(`Session: failed to get session data`,data);
       updateAuthUI(null);
     }
   } catch (error) {
