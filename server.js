@@ -179,15 +179,21 @@ app.post("/login", async (req, res) => {
 });
 
 app.post("/logout", async (req, res) => {
-  const { error } = await supabase.auth.signOut();
+  const token = req.cookies.sessionToken;
 
-  if (error)
-    return res.status(500).json({ message: "Failed to logout", error });
+  if (!token) {
+    return res.status(400).json({ message: "No token to log out" });
+  }
+  
+  res.clearCookie("sessionToken", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "Lax",
+  });
 
-  res.clearCookie("connect.sid");
-  res.clearCookie("sessionToken");
-  res.json({ message: "Logged out" });
-  res.status(200).json({ message: "Logout successful" });
+  await supabase.auth.signOut(); 
+
+  res.json({ message: "Logged out successfully" });
 });
 
 app.post("/score", async (req, res) => {
