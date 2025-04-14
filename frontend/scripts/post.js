@@ -63,7 +63,7 @@ async function authenticate(endpoint, body, stateAuth) {
       showAlertServer("success", `${endpoint} Successful`, data.message);
       $(".modal").modal("hide");
       console.log(data.user);
-      if (!stateAuth == Login) {
+      if (stateAuth === 'Login') {
         updateAuthUI(data.user);
       }
     } else {
@@ -78,7 +78,7 @@ function register() {
   authenticate("register", {
     username: document.getElementById("registerUsername").value.trim(),
     password: document.getElementById("registerPassword").value.trim(),
-    stateAuth: register,
+    stateAuth: 'register',
   });
 }
 
@@ -86,7 +86,7 @@ function login() {
   authenticate("login", {
     username: document.getElementById("loginUsername").value.trim(),
     password: document.getElementById("loginPassword").value.trim(),
-    stateAuth: Login,
+    stateAuth: 'Login',
   });
 }
 
