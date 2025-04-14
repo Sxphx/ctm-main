@@ -4,6 +4,7 @@
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",
     "connect-redis": "^8.0.2",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "datatables.net-dt": "^2.2.2",
     "dotenv": "^16.4.7",
