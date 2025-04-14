@@ -62,6 +62,7 @@ async function authenticate(endpoint, body) {
     if (response.ok) {
       showAlertServer("success", `${endpoint} Successful`, data.message);
       $(".modal").modal("hide");
+      console.log(data.user);
       updateAuthUI(data.user);
     } else {
       throw new Error(data.error);
@@ -86,8 +87,11 @@ function login() {
 }
 
 async function logout() {
-  document.cookie =
-    "sessionToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  await fetch("/logout", {
+    method: "POST",
+    credentials: "include",
+  });
+
   showAlertServer("success", "Logged Out", "You have successfully logged out.");
   updateAuthUI(null);
 }
@@ -101,8 +105,9 @@ async function checkSession() {
 
   if (response.ok) {
     const data = await response.json();
-    updateAuthUI(data.user);
-    console.log(data.user);
+    username = data.user.email.split("@")[0];
+    updateAuthUI(username);
+    console.log(username);
   } else {
     updateAuthUI(null);
   }
@@ -115,7 +120,7 @@ function updateAuthUI(user) {
     ? "none"
     : "unset";
   document.getElementById("usernameDisplay").textContent = user
-    ? user.username
+    ? username
     : "Guest";
 }
 
