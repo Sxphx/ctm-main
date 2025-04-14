@@ -4,7 +4,6 @@ const API_BASE_URL =
     ? "http://127.0.0.1:3000"
     : "https://ctm-main.vercel.app/";
 
-
 function showAlertServer(type, topic, message) {
   toastr.options = {
     positionClass: "toast-top-center",
@@ -44,7 +43,7 @@ function updateLeaderboardUI(data) {
   });
 }
 
-async function authenticate(endpoint, body, stateAuth) {
+async function authenticate(endpoint, body) {
   try {
     const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
       method: "POST",
@@ -57,11 +56,7 @@ async function authenticate(endpoint, body, stateAuth) {
     if (response.ok) {
       showAlertServer("success", `${endpoint} Successful`, data.message);
       $(".modal").modal("hide");
-      if (stateAuth !== "register") {
-        updateAuthUI(data.user);
-      } else {
-        console.log(data.user);
-      }
+      updateAuthUI(data.user);
     } else {
       throw new Error(data.error);
     }
@@ -74,7 +69,6 @@ function register() {
   authenticate("register", {
     username: document.getElementById("registerUsername").value.trim(),
     password: document.getElementById("registerPassword").value.trim(),
-    stateAuth: "register",
   });
 }
 
@@ -82,7 +76,6 @@ function login() {
   authenticate("login", {
     username: document.getElementById("loginUsername").value.trim(),
     password: document.getElementById("loginPassword").value.trim(),
-    stateAuth: "Login",
   });
 }
 
