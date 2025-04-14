@@ -184,14 +184,13 @@ app.post("/logout", async (req, res) => {
   if (!token) {
     return res.status(400).json({ message: "No token to log out" });
   }
-  
+
   res.clearCookie("sessionToken", {
     httpOnly: true,
     secure: true,
     sameSite: "Lax",
+    path: "/", // must match!
   });
-
-  await supabase.auth.signOut(); 
 
   res.json({ message: "Logged out successfully" });
 });
