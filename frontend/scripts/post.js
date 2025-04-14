@@ -1,7 +1,7 @@
 const API_BASE_URL =
   window.location.hostname === "127.0.0.1" ||
   window.location.hostname === "localhost"
-    ? "http://127.0.0.1:3001"
+    ? "http://127.0.0.1:3000"
     : "https://ctm-main.vercel.app/";
 
 function getCookie(name) {
@@ -71,7 +71,6 @@ async function authenticate(endpoint, body) {
   }
 }
 
-
 function register() {
   authenticate("register", {
     username: document.getElementById("registerUsername").value.trim(),
@@ -92,7 +91,6 @@ async function logout() {
   showAlertServer("success", "Logged Out", "You have successfully logged out.");
   updateAuthUI(null);
 }
-
 
 async function checkSession() {
   const token = getCookie("sessionToken");
