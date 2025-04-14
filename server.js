@@ -146,7 +146,7 @@ app.post("/register", async (req, res) => {
     });
   }
 
-  res.status(201).json({ message: "User registered successfully", user: data });
+  res.status(201).json({ message: "User registered successfully", user: data.user });
 });
 
 // POST /login
@@ -174,7 +174,6 @@ app.post("/login", async (req, res) => {
     maxAge: 60 * 60 * 24 * 7 * 1000,
   });
 
-  console.log({ message: "Logged in successfully", user: data.user });
   res.json({ message: "Logged in successfully", user: data.user });
 });
 
