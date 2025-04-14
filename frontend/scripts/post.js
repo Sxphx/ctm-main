@@ -114,24 +114,20 @@ async function checkSession() {
 
   if (response.ok) {
     const data = await response.json();
-    console.log(data.user);
-    username = data.user.email.split("@")[0];
-    updateAuthUI(username);
-    console.log(username);
+    updateAuthUI(data.user);
   } else {
     updateAuthUI(null);
   }
 }
 
 function updateAuthUI(user) {
+  const username = user?.email.split("@")[0] ?? "Guest";
   document.getElementById("login-btn").style.display = user ? "none" : "unset";
   document.getElementById("logout-btn").style.display = user ? "unset" : "none";
   document.getElementById("register-btn").style.display = user
     ? "none"
     : "unset";
-  document.getElementById("usernameDisplay").textContent = user
-    ? username
-    : "Guest";
+  document.getElementById("usernameDisplay").textContent = username;
 }
 
 async function sendScore(score) {
