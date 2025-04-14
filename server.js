@@ -7,7 +7,7 @@ const session = require("express-session");
 const { log } = require("console");
 const app = express();
 const path = require("path");
-const port = 3001;
+const port = 3000;
 
 // session middleware
 
@@ -52,6 +52,7 @@ app.get("/leaderboard", (req, res) => {
   res.sendFile(path.join(__dirname, "leaderboard.html"));
 });
 
+// app.set("trust proxy", 1);
 // body-parser middleware
 app.use(bodyParser.json());
 
@@ -174,8 +175,8 @@ app.post("/login", async (req, res) => {
   };
 
   res.cookie("sessionToken", data.session.access_token, {
-    httpOnly: false, // So frontend can read it
-    maxAge: 24 * 60 * 60 * 1000, // 1 day
+    httpOnly: false,
+    maxAge: 24 * 60 * 60 * 1000,
     sameSite: "lax",
   });
   // console.log(req.session.user);
@@ -236,29 +237,39 @@ app.post("/score", async (req, res) => {
   res.status(200).json({ message: "Score updated successfully" });
 });
 
-app.get("/session", (req, res) => {
-  if (req.session.user && req.session.user.loggedIn) {
-    return res.status(200).json({
-      loggedIn: true,
-      user: req.session.user,
-    });
+app.post("/session", async (req, res) => {
+  const token = req.cookies.sessionToken;
+  console.log("endpoint reached session");
+  if (!token) {
+    return res.status(401).json({ message: "Not authenticated" });
   }
-  return res.status(200).json({ loggedIn: false });
-});
 
-app.get("/checklogin", (req, res) => {
-  if (req.session.user && req.session.user.loggedIn) {
-    return res.status(200).json({
-      loggedIn: true,
-      user: req.session.user,
+  try {
+    const {
+      data: { user },
+      error,
+    } = await supabase.auth.getUser(token);
+
+    if (error || !user) {
+      console.error("Session check error:", error);
+      return res.status(401).json({ message: "Invalid session", error });
+    }
+
+    console.log("Session check success:", user);
+    res.status(200).json({
+      message: "Session valid",
+      user: {
+        username: req.session.user.username,
+        UID: user.id,
+      },
     });
+  } catch (err) {
+    console.error("Session check error:", err);
+    res.status(500).json({ message: "Failed to check session", error: err });
   }
-  return res.status(200).json({ loggedIn: false });
 });
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
   console.log(`Server is running at https://ctm-main.vercel.app/:${port}`);
 });
-
-app.set("trust proxy", 1);
