@@ -63,7 +63,9 @@ async function authenticate(endpoint, body) {
       showAlertServer("success", `${endpoint} Successful`, data.message);
       $(".modal").modal("hide");
       console.log(data.user);
-      updateAuthUI(data.user);
+      if (login) {
+        updateAuthUI(data.user);
+      }
     } else {
       throw new Error(data.error);
     }
@@ -83,6 +85,7 @@ function login() {
   authenticate("login", {
     username: document.getElementById("loginUsername").value.trim(),
     password: document.getElementById("loginPassword").value.trim(),
+    login: true,
   });
 }
 
