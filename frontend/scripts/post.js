@@ -121,7 +121,7 @@ function updateAuthUI(user) {
     ? "none"
     : "unset";
   document.getElementById("usernameDisplay").textContent = user
-    ? username
+    ? user.email.split("@")[0]
     : "Guest";
 }
 
