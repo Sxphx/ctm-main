@@ -1,4 +1,5 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -8,6 +9,9 @@ const { log } = require("console");
 const app = express();
 const path = require("path");
 const port = 3000;
+
+app.use(cookieParser());
+app.use(express.json());
 
 // session middleware
 
@@ -145,46 +149,29 @@ app.post("/register", async (req, res) => {
   res.status(201).json({ message: "User registered successfully", user: data });
 });
 
+// POST /login
 app.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-
-  if (!username || !password) {
-    return res
-      .status(400)
-      .json({ message: "Please provide username and password" });
-  }
-
-  const email = `${username}@linganggu.com`;
+  const { email, password } = req.body;
 
   const { data, error } = await supabase.auth.signInWithPassword({
-    email: email,
-    password: password,
+    email,
+    password,
   });
 
-  if (error) {
-    console.error("Login error:", error.message);
-    return res
-      .status(401)
-      .json({ message: "Invalid username or password", error: error.message });
+  if (error || !data.session) {
+    return res.status(401).json({ message: "Invalid credentials", error });
   }
 
-  req.session.user = {
-    loggedIn: true,
-    UID: data.user.id,
-    username: username,
-  };
+  const token = data.session.access_token;
 
-  res.cookie("sessionToken", data.session.access_token, {
-    httpOnly: false,
-    maxAge: 24 * 60 * 60 * 1000,
-    sameSite: "lax",
+  res.cookie("sessionToken", token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: "Lax",
+    maxAge: 60 * 60 * 24 * 7 * 1000,
   });
-  // console.log(req.session.user);
 
-  res.status(200).json({
-    message: "Login successful",
-    user: req.session.user,
-  });
+  res.json({ message: "Logged in successfully", user: data.user });
 });
 
 app.post("/logout", async (req, res) => {
@@ -193,8 +180,8 @@ app.post("/logout", async (req, res) => {
   if (error)
     return res.status(500).json({ message: "Failed to logout", error });
 
-  req.session.destroy();
   res.clearCookie("sessionToken");
+  res.json({ message: "Logged out" });
   res.status(200).json({ message: "Logout successful" });
 });
 
@@ -237,9 +224,10 @@ app.post("/score", async (req, res) => {
   res.status(200).json({ message: "Score updated successfully" });
 });
 
+// POST /session
 app.post("/session", async (req, res) => {
   const token = req.cookies.sessionToken;
-  console.log("endpoint reached session");
+
   if (!token) {
     return res.status(401).json({ message: "Not authenticated" });
   }
@@ -251,15 +239,13 @@ app.post("/session", async (req, res) => {
     } = await supabase.auth.getUser(token);
 
     if (error || !user) {
-      console.error("Session check error:", error);
       return res.status(401).json({ message: "Invalid session", error });
     }
 
-    console.log("Session check success:", user);
-    res.status(200).json({
+    return res.status(200).json({
       message: "Session valid",
       user: {
-        username: req.session.user.username,
+        email: user.email,
         UID: user.id,
       },
     });
