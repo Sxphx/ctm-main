@@ -62,6 +62,7 @@ async function authenticate(endpoint, body) {
     if (response.ok) {
       showAlertServer("success", `${endpoint} Successful`, data.message);
       $(".modal").modal("hide");
+      console.log(data.user);
       updateAuthUI(data.user);
     } else {
       throw new Error(data.error);
@@ -104,6 +105,7 @@ async function checkSession() {
 
   if (response.ok) {
     const data = await response.json();
+    console.log(data.user);
     username = data.user.email.split("@")[0];
     updateAuthUI(username);
     console.log(username);
