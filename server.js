@@ -184,6 +184,7 @@ app.post("/logout", async (req, res) => {
   if (error)
     return res.status(500).json({ message: "Failed to logout", error });
 
+  res.clearCookie("connect.sid");
   res.clearCookie("sessionToken");
   res.json({ message: "Logged out" });
   res.status(200).json({ message: "Logout successful" });
@@ -191,13 +192,16 @@ app.post("/logout", async (req, res) => {
 
 app.post("/score", async (req, res) => {
   const { score } = req.body;
-  const token = req.cookies.sessionToken; 
+  const token = req.cookies.sessionToken;
   if (!token) {
     return res.status(401).json({ message: "Not logged in" });
   }
 
   try {
-    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser(token);
 
     if (userError || !user) {
       return res.status(401).json({ message: "Invalid or expired session" });
@@ -212,7 +216,9 @@ app.post("/score", async (req, res) => {
       .single();
 
     if (oldScoreError || !oldScoreData) {
-      return res.status(500).json({ message: "Database error", error: oldScoreError });
+      return res
+        .status(500)
+        .json({ message: "Database error", error: oldScoreError });
     }
 
     if (oldScoreData.score >= score) {
@@ -225,7 +231,9 @@ app.post("/score", async (req, res) => {
       .eq("user_id", UID);
 
     if (updateError) {
-      return res.status(500).json({ message: "Database error", error: updateError });
+      return res
+        .status(500)
+        .json({ message: "Database error", error: updateError });
     }
 
     res.status(200).json({ message: "Score updated successfully" });
@@ -234,7 +242,6 @@ app.post("/score", async (req, res) => {
     res.status(500).json({ message: "Server error", error: err });
   }
 });
-
 
 // POST /session
 app.post("/session", async (req, res) => {
