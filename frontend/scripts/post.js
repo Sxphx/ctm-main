@@ -93,32 +93,20 @@ async function logout() {
 }
 
 async function checkSession() {
-  const token = getCookie("sessionToken");
-  if (!token) {
-    console.log("Session: no token found");
-    return updateAuthUI(null);
-  }
+  const response = await fetch(`${API_BASE_URL}/session`, {
+    method: "POST",
+    credentials: "include",
+    headers: { "Content-Type": "application/json" },
+  });
 
-  try {
-    const response = await fetch(`${API_BASE_URL}/session`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-    });
-    console.log(`Session: response status ${response.status}`);
-    if (response.ok) {
-      const data = await response.json();
-      console.log(`Session: response data`, data);
-      updateAuthUI(data.user);
-    } else {
-      console.log(`Session: failed to get session data`,data);
-      updateAuthUI(null);
-    }
-  } catch (error) {
-    console.log(`Session: error occurred`, error);
+  if (response.ok) {
+    const data = await response.json();
+    updateAuthUI(data.user);
+  } else {
     updateAuthUI(null);
   }
 }
+
 
 function updateAuthUI(user) {
   document.getElementById("login-btn").style.display = user ? "none" : "unset";
