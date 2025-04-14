@@ -174,6 +174,7 @@ app.post("/login", async (req, res) => {
     maxAge: 60 * 60 * 24 * 7 * 1000,
   });
 
+  console.log({ message: "Logged in successfully", user: data.user });
   res.json({ message: "Logged in successfully", user: data.user });
 });
 
@@ -190,42 +191,50 @@ app.post("/logout", async (req, res) => {
 
 app.post("/score", async (req, res) => {
   const { score } = req.body;
-  const UID = req.session.user.UID;
-
-  // console.log(UID);
-
-  if (!UID) {
+  const token = req.cookies.sessionToken; 
+  if (!token) {
     return res.status(401).json({ message: "Not logged in" });
   }
 
-  const { data: oldScoreData, error: oldScoreError } = await supabase
-    .from("ctm")
-    .select("score")
-    .eq("user_id", UID)
-    .single();
+  try {
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
 
-  if (oldScoreError || !oldScoreData) {
-    return res
-      .status(500)
-      .json({ message: "Database error", error: oldScoreError });
+    if (userError || !user) {
+      return res.status(401).json({ message: "Invalid or expired session" });
+    }
+
+    const UID = user.id;
+
+    const { data: oldScoreData, error: oldScoreError } = await supabase
+      .from("ctm")
+      .select("score")
+      .eq("user_id", UID)
+      .single();
+
+    if (oldScoreError || !oldScoreData) {
+      return res.status(500).json({ message: "Database error", error: oldScoreError });
+    }
+
+    if (oldScoreData.score >= score) {
+      return res.status(200).json({ message: "Score not updated" });
+    }
+
+    const { error: updateError } = await supabase
+      .from("ctm")
+      .update({ score: score })
+      .eq("user_id", UID);
+
+    if (updateError) {
+      return res.status(500).json({ message: "Database error", error: updateError });
+    }
+
+    res.status(200).json({ message: "Score updated successfully" });
+  } catch (err) {
+    console.error("Error verifying token:", err);
+    res.status(500).json({ message: "Server error", error: err });
   }
-
-  if (oldScoreData.score >= score) {
-    return res.status(200).json({ message: "Score not updated" });
-  }
-
-  const { error: updateError } = await supabase
-    .from("ctm")
-    .update({ score: score })
-    .eq("user_id", UID);
-
-  if (updateError)
-    return res
-      .status(500)
-      .json({ message: "Database error", error: updateError });
-
-  res.status(200).json({ message: "Score updated successfully" });
 });
+
 
 // POST /session
 app.post("/session", async (req, res) => {
