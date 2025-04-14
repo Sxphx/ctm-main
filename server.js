@@ -1,35 +1,17 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const mysql = require("mysql");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const passwordHash = require("password-hash");
-const session = require("express-session");
-const { log } = require("console");
+const { createClient } = require("@supabase/supabase-js");
 const app = express();
 const path = require("path");
-const port = 3000;
 
+// Middleware and setup
 app.use(cookieParser());
 app.use(express.json());
+app.use(bodyParser.json());
 
-// session middleware
-
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET || "a7f4e9c2b1d8e3a6f5c2d9b7e4a1f8c3",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: false,
-      maxAge: 24 * 60 * 60 * 1000,
-      httpOnly: true,
-      sameSite: "lax",
-    },
-  })
-);
-
-// cors middleware
+// CORS Configuration
 app.use(
   cors({
     origin: [
@@ -43,33 +25,17 @@ app.use(
   })
 );
 
-//connect frontend
+// Static files for frontend
 app.use(express.static(path.join(__dirname, "frontend")));
-
 app.use(express.static(__dirname));
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
-
-app.get("/leaderboard", (req, res) => {
-  res.sendFile(path.join(__dirname, "leaderboard.html"));
-});
-
-// app.set("trust proxy", 1);
-// body-parser middleware
-app.use(bodyParser.json());
-
-//database connect
-const { createClient } = require("@supabase/supabase-js");
-require("dotenv").config();
-
+// Supabase client
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_KEY
 );
 
-// check connection
+// Supabase connection test
 supabase
   .from("ctm")
   .select("*")
@@ -84,19 +50,15 @@ supabase
     console.error("Error connecting to Supabase:", err);
   });
 
-// board
-app.post("/allleaderboard", async (req, res) => {
-  const { data, error } = await supabase
-    .from("ctm")
-    .select("username, score")
-    .order("score", { ascending: false });
-  console.log(data);
-  if (error) return res.status(500).json({ message: "Database error", error });
-
-  res.status(200).json(data);
+// Define routes
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// top
+app.get("/leaderboard", (req, res) => {
+  res.sendFile(path.join(__dirname, "leaderboard.html"));
+});
+
 app.post("/leaderboard", async (req, res) => {
   const { data, error } = await supabase
     .from("ctm")
@@ -109,10 +71,9 @@ app.post("/leaderboard", async (req, res) => {
   res.status(200).json(data);
 });
 
-// reg
+// Register endpoint
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
-
   if (!username || !password) {
     return res
       .status(400)
@@ -149,7 +110,7 @@ app.post("/register", async (req, res) => {
   res.status(201).json({ message: "User registered successfully", user: data });
 });
 
-// POST /login
+// Login endpoint
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
