@@ -64,12 +64,13 @@ async function authenticate(endpoint, body, stateAuth) {
       $(".modal").modal("hide");
       if (stateAuth !== "register") {
         updateAuthUI(data.user);
+      } else {
+        console.log(data.user);
       }
     } else {
       throw new Error(data.error);
     }
   } catch (error) {
-    console.log(error);
     showAlertServer(
       "error",
       `${endpoint} Failed`,
