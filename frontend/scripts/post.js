@@ -49,7 +49,7 @@ function updateLeaderboardUI(data) {
   });
 }
 
-async function authenticate(endpoint, body) {
+async function authenticate(endpoint, body, stateAuth) {
   try {
     const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
       method: "POST",
@@ -63,7 +63,7 @@ async function authenticate(endpoint, body) {
       showAlertServer("success", `${endpoint} Successful`, data.message);
       $(".modal").modal("hide");
       console.log(data.user);
-      if (login) {
+      if (!stateAuth == Login) {
         updateAuthUI(data.user);
       }
     } else {
@@ -78,6 +78,7 @@ function register() {
   authenticate("register", {
     username: document.getElementById("registerUsername").value.trim(),
     password: document.getElementById("registerPassword").value.trim(),
+    stateAuth: register,
   });
 }
 
@@ -85,7 +86,7 @@ function login() {
   authenticate("login", {
     username: document.getElementById("loginUsername").value.trim(),
     password: document.getElementById("loginPassword").value.trim(),
-    login: true,
+    stateAuth: Login,
   });
 }
 
