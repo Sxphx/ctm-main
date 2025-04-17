@@ -60,7 +60,16 @@ async function authenticate(endpoint, body) {
         updateAuthUI(data.user);
       }
     } else {
-      throw new Error(data.error);
+      let errorMessage = "An unknown error occurred";
+
+      if (typeof data.error === "string") {
+        errorMessage = data.error;
+      } else if (typeof data.error === "object") {
+        if (data.error.code === "invalid_credentials") {
+          errorMessage = "Password or Username incorrect";
+        }
+      }
+      throw new Error(errorMessage);
     }
   } catch (error) {
     showAlertServer("error", `${endpoint} Failed`, error.message);

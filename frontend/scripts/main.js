@@ -1,5 +1,5 @@
 // const { log } = require("winston");
-
+src = "building.js";
 function checkForValidMoves() {
   if (water <= 0 && energy <= 0 && food <= 0) {
     return false;
@@ -26,24 +26,40 @@ function checkForValidMoves() {
 function makeTable() {
   const table = document.createElement("table");
   const tbody = document.createElement("tbody");
+
   for (let i = 0; i < 3; i++) {
     const tr = document.createElement("tr");
+
     for (let j = 0; j < 3; j++) {
       const td = document.createElement("td");
       td.className = "city";
       td.id = `cell-${i}-${j}`;
+
+      if (i === 2 && (j === 0 || j === 2)) continue;
+
       const imgtd = document.createElement("img");
       imgtd.src = `img/useBuilding/${i}-${j}.png`;
       imgtd.className = "city";
       imgtd.width = "city";
       imgtd.id = `img-cell-${i}-${j}`;
-      const btntd = document.createElement("btn");
+
+      const btntd = document.createElement("button");
       btntd.className = "btn city-btn";
       btntd.type = "button";
       btntd.id = `btn-cell-${i}-${j}`;
-      btntd.innerHTML = `Not Built`;
+      btntd.textContent = "Not Built";
+      
+      const nameP = document.createElement("p");
+      nameP.id = `p-cell-${i}-${j}`;
+      nameP.textContent = getBuildingName(i, j);
+      nameP.style.margin = "5px 0 0 0";
+      nameP.style.color = "black";
+      nameP.style.fontWeight = "bold";
+
       td.appendChild(imgtd);
       td.appendChild(btntd);
+      td.appendChild(nameP);
+
       td.style.position = "relative";
       btntd.style.position = "absolute";
       btntd.style.top = "50%";
@@ -53,13 +69,22 @@ function makeTable() {
       btntd.style.color = "black";
       btntd.style.fontSize = "2rem";
       td.style.filter = "brightness(0.5)";
+
       tr.appendChild(td);
     }
+
     tbody.appendChild(tr);
   }
+
   table.appendChild(tbody);
   const container = document.getElementById("table-container");
   container.appendChild(table);
+}
+
+function getBuildingName(i, j) {
+  const cellId = `${i}-${j}`;
+  const building = buildingsList.find((b) => b.cell === cellId);
+  return building ? building.name : "";
 }
 
 makeTable();
@@ -169,7 +194,9 @@ function makeDecision(decision) {
         showAlert(
           "error",
           "Not enough money",
-          `You need ${Math.ceil(waterCost)} money to invest in water infrastructure.`
+          `You need ${Math.ceil(
+            waterCost
+          )} money to invest in water infrastructure.`
         );
         return;
       }
@@ -177,7 +204,9 @@ function makeDecision(decision) {
       water += waterGet;
       money -= waterCost;
       logAction(
-        `💧 Water Infrastructure Investment\n- Gained ${Math.floor(waterGet)} water\n- Cost: ${Math.ceil(waterCost)} money`
+        `💧 Water Infrastructure Investment\n- Gained ${Math.floor(
+          waterGet
+        )} water\n- Cost: ${Math.ceil(waterCost)} money`
       );
       showAlert(
         "success",
@@ -192,7 +221,9 @@ function makeDecision(decision) {
         showAlert(
           "error",
           "Insufficient resources",
-          `You need 15 water and ${Math.ceil(energyCost)} money to build a power plant.`
+          `You need 15 water and ${Math.ceil(
+            energyCost
+          )} money to build a power plant.`
         );
         return;
       }
@@ -201,7 +232,9 @@ function makeDecision(decision) {
       water -= 15;
       money -= energyCost;
       logAction(
-        `⚡ Power Plant Construction\n- Gained ${Math.floor(energyGet)} energy\n- Cost: ${Math.ceil(energyCost)} money, 15 water`
+        `⚡ Power Plant Construction\n- Gained ${Math.floor(
+          energyGet
+        )} energy\n- Cost: ${Math.ceil(energyCost)} money, 15 water`
       );
       showAlert(
         "success",
@@ -224,7 +257,9 @@ function makeDecision(decision) {
       foodGet = 35 * (1 + checkFarm()) * foodMultiplier;
       food += foodGet;
       logAction(
-        `🌾 Food Harvesting\n- Gained ${Math.floor(foodGet)} food\n- Cost: 20 water, 15 energy`
+        `🌾 Food Harvesting\n- Gained ${Math.floor(
+          foodGet
+        )} food\n- Cost: 20 water, 15 energy`
       );
       showAlert(
         "success",
@@ -249,12 +284,16 @@ function makeDecision(decision) {
       happiness += happinessBoost;
       money -= expansionCost;
       logAction(
-        `🏙️ City Expansion\n- Population +15, Happiness +${Math.floor(happinessBoost)}\n- Cost: ${Math.ceil(expansionCost)} money`
+        `🏙️ City Expansion\n- Population +15, Happiness +${Math.floor(
+          happinessBoost
+        )}\n- Cost: ${Math.ceil(expansionCost)} money`
       );
       showAlert(
         "success",
         "City Expansion",
-        `Population and happiness have increased by ${Math.floor(happinessBoost)}.`
+        `Population and happiness have increased by ${Math.floor(
+          happinessBoost
+        )}.`
       );
       break;
   }
@@ -278,7 +317,11 @@ function makeDecision(decision) {
   happiness -= happinessConsumed;
 
   logAction(
-    `🔻 Resource Consumption\n- Energy: ${Math.ceil(energyConsumed)}\n- Food: ${Math.ceil(foodConsumed)}\n- Water: ${Math.ceil(waterConsumed)}\n- Happiness: ${Math.ceil(happinessConsumed)}`
+    `🔻 Resource Consumption\n- Energy: ${Math.ceil(
+      energyConsumed
+    )}\n- Food: ${Math.ceil(foodConsumed)}\n- Water: ${Math.ceil(
+      waterConsumed
+    )}\n- Happiness: ${Math.ceil(happinessConsumed)}`
   );
 
   console.log(

@@ -202,16 +202,6 @@ function buildingBuy(buildingId) {
     return;
   }
 
-  if (availableSpace <= 0) {
-    // console.log("no more space available", availableSpace);
-    showAlert(
-      "error",
-      "Building Failed",
-      "No more space available for buildings."
-    );
-    return;
-  }
-
   let enoughResources = true;
   for (const [resource, amount] of Object.entries(
     building.cost(building.level + 1)
@@ -279,9 +269,13 @@ function buildingBuy(buildingId) {
       if (resource === "food") food -= amount;
       if (resource === "happiness") happiness -= amount;
     }
-
+    console.log(building.id);
+    if (building.id === "university") {
+      document.getElementById("reseacrh-btn").style.display = "none";
+      document.getElementById("reseacrh-btn2").style.display = "block";
+    }
     building.owned = true;
-  
+
     showAlert(
       "success",
       "Building Purchased",
