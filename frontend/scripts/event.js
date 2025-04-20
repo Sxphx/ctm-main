@@ -64,21 +64,21 @@ const events = [
 ];
 
 function protest() {
-    const ownedBuildings = buildingsList.filter(b => b.owned);
-    const randomIndex = Math.floor(Math.random() * ownedBuildings.length);
-    const building = ownedBuildings[randomIndex];
-    building.owned = false;
-    updateBuildingUI(building.id);
-    showAlert(
-        "error",
-        "Protest",
-        "A group of angry citizens has destroyed a building!",
-        "Building destroyed : " + building.name
-    );
+    // const ownedBuildings = buildingsList.filter(b => b.owned);
+    // const randomIndex = Math.floor(Math.random() * ownedBuildings.length);
+    // const building = ownedBuildings[randomIndex];
+    // building.owned = false;
+    // updateBuildingUI(building.id);
+    // showAlert(
+    //     "error",
+    //     "Protest",
+    //     "A group of angry citizens has destroyed a building!",
+    //     "Building destroyed : " + building.name
+    // );
 
-    population -= 5;
-    happiness -= 5;
-    updateStats();
+    // population -= 5;
+    // happiness -= 5;
+    // updateStats();
 }
 
 function randomEvent() {
